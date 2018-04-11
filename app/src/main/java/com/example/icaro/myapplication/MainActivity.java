@@ -1,9 +1,13 @@
 package com.example.icaro.myapplication;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.net.ParseException;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +21,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.sql.Date;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,10 +31,36 @@ public class MainActivity extends AppCompatActivity {
 
         final HashSet<CalendarDay> dates = new HashSet<>();
 
+        Database database = new Database(this);
+        SQLiteDatabase conn =  database.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("ano","2018");
+        cv.put("mes","04");
+        cv.put("dia","12");
+        conn.insertOrThrow("feriado", null, cv);
 
 
+        Cursor cursor = conn.query("feriado", null, null, null, null, null, null);
+        cursor.moveToFirst();
+        if(cursor.getCount()>0){
+            int id2;
+            int ano;
+            int dia;
+            int mes;
+            do {
 
-        setContentView(R.layout.activity_main);
+                id2 =cursor.getInt(0);
+                ano = cursor.getInt(1);
+                mes = cursor.getInt(2);
+                dia = cursor.getInt(3);
+                dates.add(CalendarDay.from(ano,mes,dia));
+                //Log.d("TESTE","LIDO: "+id2+"-"+data);
+            } while(cursor.moveToNext());
+        }
+
+
+    setContentView(R.layout.activity_main);
         MaterialCalendarView mcv = (MaterialCalendarView) findViewById(R.id.calendarView);
         mcv.state().edit()
                 .setFirstDayOfWeek(Calendar.SUNDAY)
