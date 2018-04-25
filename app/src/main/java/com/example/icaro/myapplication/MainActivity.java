@@ -2,6 +2,7 @@ package com.example.icaro.myapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Toast;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -28,10 +30,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        final Intent data = new Intent(this, EventActivity.class);
+        final Button addButton= (Button) findViewById(R.id.addButton);
         final HashSet<CalendarDay> dates = new HashSet<>();
 
-        Database database = new Database(this);
+
+
+
+       /* Database database = new Database(this);
         SQLiteDatabase conn =  database.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 dates.add(CalendarDay.from(ano,mes,dia));
                 //Log.d("TESTE","LIDO: "+id2+"-"+data);
             } while(cursor.moveToNext());
-        }
+        }*/
 
 
     setContentView(R.layout.activity_main);
@@ -68,15 +74,32 @@ public class MainActivity extends AppCompatActivity {
                 .setMaximumDate(CalendarDay.from(2019, 0, 12))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
-        mcv.setSelectedDate(CalendarDay.today().getDate());
+        //mcv.setSelectedDate(CalendarDay.today().getDate());
         mcv.getContext();
         CalendarDay date = CalendarDay.from(2018, 03, 18);
         dates.add(date);
         mcv.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                Intent it = new Intent(MainActivity.this, EventActivity.class);
+                startActivity(it);
+            }
+        });
+        /*mcv.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
             public void onDateSelected(@NonNull MaterialCalendarView mcv, @NonNull CalendarDay date, boolean selected) {
                 Toast.makeText(getApplicationContext(), date.toString(), Toast.LENGTH_LONG);
                 SimpleDateFormat mFormat = new SimpleDateFormat();
+                final int dia=date.getDay();
+                final int mes = date.getMonth();
+                final int ano = date.getYear();
+                data.putExtra("dia",dia);
+                data.putExtra("mes",mes);
+                data.putExtra("ano",ano);
+
+
+
+
                 dates.add(date);
 
 
@@ -85,9 +108,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("teste",mFormat.format(date.getDate()));
             }
-        });
+        }
+
+
+        );
+*/
+
 
         mcv.addDecorators(new EventDecorator(this,Color.RED, dates));
+
     }
 
 
