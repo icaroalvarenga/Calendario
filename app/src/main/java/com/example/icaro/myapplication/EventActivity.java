@@ -2,34 +2,53 @@ package com.example.icaro.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
+import java.util.Date;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.widget.TextView;
+
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 public class EventActivity extends Activity {
-    private ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        EventoAdapter eAdapter;
-        listView = (ListView) findViewById(R.id.lista_eventos);
-        ArrayList<Evento> eventoList = new ArrayList<>();
-        eventoList.add(new Evento(24, 04 , 2018, 00));
-        eventoList.add(new Evento(25, 04 , 2018, 00));
-        eventoList.add(new Evento(26, 04 , 2018, 00));
-        eventoList.add(new Evento(27, 04 , 2018, 00));
-        eventoList.add(new Evento(28, 04 , 2018, 00));
-        eventoList.add(new Evento(29, 04 , 2018, 00));
-        eventoList.add(new Evento(30, 04 , 2018, 00));
+        setContentView(R.layout.eventos);
+        TextView txt = (TextView) findViewById(R.id.diaView);
+        // capturando dado
+        Intent intent = getIntent();
+        String dateSelected = intent.getStringExtra("data");
+        Date date = new Date();
+        date = ConvertToDate(dateSelected);
 
 
-        eAdapter = new EventoAdapter(this,eventoList);
-        listView.setAdapter(eAdapter);
+        // fazendo alguma coisa com o dado capturado
+       // ListView txt = (ListView) findViewById(R.id.myDate);
+        txt.setText(dateSelected);
 
     }
-
+    private Date ConvertToDate(String dateString){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+        Date convertedDate = new Date();
+        try {
+            convertedDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return convertedDate;
     }
+}
 

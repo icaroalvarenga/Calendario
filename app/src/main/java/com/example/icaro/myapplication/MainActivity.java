@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
@@ -23,7 +25,15 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,42 +41,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent data = new Intent(this, EventActivity.class);
-        final Button addButton= (Button) findViewById(R.id.addButton);
+        ListView myDate;
         final HashSet<CalendarDay> dates = new HashSet<>();
+        Eventos eventos=new Eventos();
+        final ListSqliteActivity database = new ListSqliteActivity();
 
 
 
+        myDate=(ListView) findViewById(R.id.myDate);
 
-       /* Database database = new Database(this);
-        SQLiteDatabase conn =  database.getWritableDatabase();
-
-        ContentValues cv = new ContentValues();
-        cv.put("ano","2018");
-        cv.put("mes","04");
-        cv.put("dia","12");
-        conn.insertOrThrow("feriado", null, cv);
-
-
-        Cursor cursor = conn.query("feriado", null, null, null, null, null, null);
-        cursor.moveToFirst();
-        if(cursor.getCount()>0){
-            int id2;
-            int ano;
-            int dia;
-            int mes;
-            do {
-
-                id2 =cursor.getInt(0);
-                ano = cursor.getInt(1);
-                mes = cursor.getInt(2);
-                dia = cursor.getInt(3);
-                dates.add(CalendarDay.from(ano,mes,dia));
-                //Log.d("TESTE","LIDO: "+id2+"-"+data);
-            } while(cursor.moveToNext());
-        }*/
-
-
-    setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         MaterialCalendarView mcv = (MaterialCalendarView) findViewById(R.id.calendarView);
         mcv.state().edit()
                 .setFirstDayOfWeek(Calendar.SUNDAY)
@@ -74,51 +58,56 @@ public class MainActivity extends AppCompatActivity {
                 .setMaximumDate(CalendarDay.from(2019, 0, 12))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
-        //mcv.setSelectedDate(CalendarDay.today().getDate());
+        mcv.setSelectedDate(CalendarDay.today().getDate());
         mcv.getContext();
-        CalendarDay date = CalendarDay.from(2018, 03, 18);
-        dates.add(date);
+
+       /* mcv.setOnDateChangedListener(new OnDateSelectedListener() {
+                                         @Override
+                                         public void onDateSelected(@NonNull MaterialCalendarView mcv, @NonNull CalendarDay date, boolean selected) {
+                                             //Toast.makeText(getApplicationContext(), date.toString(), Toast.LENGTH_LONG);
+                                             SimpleDateFormat mFormat = new SimpleDateFormat();
+                                             //dates.add(date);
+                                             //database.getEventos(date.getDay(),date.getMonth(),date.getYear());
+                                             Log.d("teste", mFormat.format(date.getDate()));
+                                         }
+                                     }
+
+
+        );*/
         mcv.setOnDateChangedListener(new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                Intent it = new Intent(MainActivity.this, EventActivity.class);
-                startActivity(it);
-            }
-        });
-        /*mcv.setOnDateChangedListener(new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView mcv, @NonNull CalendarDay date, boolean selected) {
-                Toast.makeText(getApplicationContext(), date.toString(), Toast.LENGTH_LONG);
-                SimpleDateFormat mFormat = new SimpleDateFormat();
-                final int dia=date.getDay();
-                final int mes = date.getMonth();
-                final int ano = date.getYear();
-                data.putExtra("dia",dia);
-                data.putExtra("mes",mes);
-                data.putExtra("ano",ano);
+                                        @Override
+                                            public void onDateSelected(@NonNull MaterialCalendarView mcv, @NonNull CalendarDay date, boolean selected) {
+                                             SimpleDateFormat mFormat = new SimpleDateFormat();
+                                             //dates.add(date);
+                                             //database.getEventos(date.getDay(),date.getMonth(),date.getYear());
+                                             //Log.d("teste", mFormat.format(date.getDate()));
+                                            {
+                                                Intent intent = new Intent(mcv.getContext(), EventActivity.class);
+                                                Log.d("teste", mFormat.format(date.getDate()));
+                                                intent.putExtra("data",mFormat.format(date.getDate()));
+                                                startActivity(intent);
 
-
-
-
-                dates.add(date);
-
-
-
-
-
-                Log.d("teste",mFormat.format(date.getDate()));
-            }
-        }
+                                            }
+                                         }
+                                     }
 
 
         );
-*/
 
 
-        mcv.addDecorators(new EventDecorator(this,Color.RED, dates));
+        mcv.addDecorators(new EventDecorator(this, Color.BLACK, eventos.getEventosNaoAula()));
+        mcv.addDecorators(new EventDecoratorFeriado(this, Color.WHITE, eventos.getEventosFeriados()));
+
+
+        //mcv.addDecorators(new EventDecorator(this, Color.RED, dates));
+
+
+
+
+    }
 
     }
 
 
-}
+
 
