@@ -211,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:text="Minuto"
+                    android:text="Hora Final"
                     android:textSize="20sp" />
 
                 <EditText

@@ -57,7 +57,32 @@ public class Database extends SQLiteOpenHelper {
 
      }
  }
+     public Cursor carregaDados() {
+         Cursor cursor;
+         SQLiteDatabase db = this.getWritableDatabase();
 
+
+         cursor = db.query("eventos", null, null, null, null, null, null, null);
+
+         if (cursor != null) {
+             cursor.moveToFirst();
+         }
+         db.close();
+         return cursor;
+   /* public Cursor carregaDados(int ano,int mes, int dia){
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        cursor = db.query("eventos", null, "ano= "  +  ano + " AND "+ " mes= " + mes + " AND " + " dia= " +dia ,null, null, null, null, null);
+
+        if(cursor!=null){
+            cursor.moveToFirst();
+        }
+        db.close();
+        return cursor;
+    }*/
+     }}
  /*   String metodo(String parametro){
         String selectQuery =
                 "SELECT * FROM correspondente WHERE num_vidas =" + parametro;
@@ -77,7 +102,7 @@ public class Database extends SQLiteOpenHelper {
 */
 
 
-}
+
 
 
 

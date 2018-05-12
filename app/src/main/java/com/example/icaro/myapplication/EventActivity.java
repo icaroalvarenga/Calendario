@@ -33,7 +33,8 @@ public class EventActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SimpleDateFormat mFormat = new SimpleDateFormat();
+        //SimpleDateFormat mFormat = new SimpleDateFormat();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventos);
         final Database database = new Database(this);
@@ -79,11 +80,13 @@ public class EventActivity extends Activity {
             @Override
             public void onClick(View view) {
                 database.insertData(Integer.parseInt(ano.getText().toString()),Integer.parseInt(mes.getText().toString()),Integer.parseInt(dia.getText().toString()),titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString());
+            finish();
             }
         });
     }
-    private Date ConvertToDate(String dateString){
+   /* private Date ConvertToDate(String dateString){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(dateString);
@@ -92,7 +95,7 @@ public class EventActivity extends Activity {
             e.printStackTrace();
         }
         return convertedDate;
-    }
+    }*/
 
 
 }
