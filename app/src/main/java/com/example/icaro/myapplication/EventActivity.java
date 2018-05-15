@@ -1,32 +1,27 @@
 package com.example.icaro.myapplication;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 public class EventActivity extends Activity {
 
@@ -34,14 +29,18 @@ public class EventActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //SimpleDateFormat mFormat = new SimpleDateFormat();
+        //final MaterialCalendarView mcv = (MaterialCalendarView) findViewById(R.id.calendarView);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventos);
         final Database database = new Database(this);
+        final String anost;
+        final String messt;
+        final String diast;
         //TextView txt = (TextView) findViewById(R.id.diaView);
         // capturando dado
         Intent intent = getIntent();
-        String dateSelected = intent.getStringExtra("data");
+        final String dateSelected = intent.getStringExtra("data");
 
 
         final TextView ano = (TextView) findViewById(R.id.evAno);                          //
@@ -51,7 +50,7 @@ public class EventActivity extends Activity {
         final TextView horaInit = (TextView) findViewById(R.id.horaInit);
         final TextView horaFim = (TextView) findViewById(R.id.horaFim);
         final EditText titulo = (EditText) findViewById(R.id.evTitulo);
-        Spinner dropdown = (Spinner) findViewById(R.id.tipoEvento);
+        final Spinner dropdown = (Spinner) findViewById(R.id.tipoEvento);
         final EditText descricao = (EditText) findViewById(R.id.evDescricao);   //
         Button add = (Button) findViewById(R.id.btnAddEvento);
 
@@ -61,16 +60,19 @@ public class EventActivity extends Activity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
 //set the spinners adapter to the previously created one.
         dropdown.setAdapter(adapter);
-
+final int i = dropdown.getSelectedItemPosition();
         Log.d("teste", dateSelected);
 
         dia.setText(dateSelected.substring(0,2));
         mes.setText(dateSelected.substring(3,5));
         ano.setText(dateSelected.substring(6,10));
+        anost=ano.getText().toString();
+        messt=mes.getText().toString();
+        diast=dia.getText().toString();
         // fazendo alguma coisa com o dado capturado
        // ListView txt = (ListView) findViewById(R.id.myDate);
        // txt.setText(dateSelected);
-
+        final HashSet<CalendarDay> dates = new HashSet<>();
         final EditText timeEditText = (EditText) findViewById(R.id.horaInit);
         new SetTime(timeEditText);
         final EditText timeEditText2 = (EditText) findViewById(R.id.horaFim);
@@ -79,23 +81,20 @@ public class EventActivity extends Activity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.insertData(Integer.parseInt(ano.getText().toString()),Integer.parseInt(mes.getText().toString()),Integer.parseInt(dia.getText().toString()),titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString());
-            finish();
+
+
+                database.insertData(Integer.parseInt(anost),Integer.parseInt(messt),Integer.parseInt(diast),titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString());
+
+                int i=dropdown.getSelectedItemPosition();
+                Intent devolve = new Intent();
+                devolve.putExtra("data", anost+messt+diast);
+                setResult(i,devolve);
+
+                finish();
             }
         });
     }
-   /* private Date ConvertToDate(String dateString){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
 
-        Date convertedDate = new Date();
-        try {
-            convertedDate = dateFormat.parse(dateString);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return convertedDate;
-    }*/
 
 
 }
