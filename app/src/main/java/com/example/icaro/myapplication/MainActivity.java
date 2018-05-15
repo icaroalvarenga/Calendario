@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         mcv.state().edit()
 
-                .setFirstDayOfWeek(Calendar.SUNDAY)
                 .setMinimumDate(CalendarDay.from(2018, 3, 3))
                 .setMaximumDate(CalendarDay.from(2019, 0, 12))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
