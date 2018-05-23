@@ -77,7 +77,7 @@ final int i = dropdown.getSelectedItemPosition();
         new SetTime(timeEditText);
         final EditText timeEditText2 = (EditText) findViewById(R.id.horaFim);
         new SetTime(timeEditText2);
-
+        setResult(-1);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
