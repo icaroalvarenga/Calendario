@@ -1,5 +1,6 @@
 package com.example.icaro.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -36,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Eventos eventos=new Eventos();
-        //Database dtb=new Database(getBaseContext());
-        //dates=dtb.carregaDadosProva();
+        Database dtb=new Database(getBaseContext());
         final ListSqliteActivity database = new ListSqliteActivity();
 
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                                             FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.addButton);
 
                                             Database crud = new Database(getBaseContext());
-                                            Cursor cursor = crud.carregaDados();
+                                            Cursor cursor = crud.carregaDados(date.getYear(),date.getMonth()+1,date.getDay());
 
                                             String[] nomeCampos = new String[] {"titulo", "horaInit"};
                                             int[] idViews = new int[] {R.id.tituloView, R.id.horaView};
@@ -104,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //mcv.addDecorators(new EventDecoratorEventos(Color.RED,dtb.carregaDadosProva()));
+        mcv.addDecorators(new EventDecoratorEventos(Color.RED,dtb.carregaDadosProva()));
+        mcv.addDecorators(new EventDecoratorEventos(Color.GREEN,dtb.carregaDadosTrabalho()));
+
         mcv.addDecorators(new EventDecorator(this,Color.BLACK, eventos.getEventosNaoAula()));
         mcv.addDecorators(new EventDecoratorFeriado(this, Color.WHITE, eventos.getEventosFeriados()));
 
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -122,25 +125,29 @@ public class MainActivity extends AppCompatActivity {
         int dia;
         int mes;
         int ano;
-        final String dateSelected = data.getStringExtra("data");
-        Log.d("teste", dateSelected);
-        ano= Integer.parseInt(dateSelected.substring(0,4));
-        mes= Integer.parseInt(dateSelected.substring(4,6));
-        dia= Integer.parseInt(dateSelected.substring(6,8));
-        //da=ConvertToDate(dateSelected);
-        CalendarDay cday = new CalendarDay(ano,mes-1,dia);
-        Log.d("teste", cday.toString());
-        Log.d("teste", String.valueOf(resultCode));
-        Log.d("teste", String.valueOf(requestCode));
+
+
+
         if (requestCode == 1) {
+
             if(resultCode == 0) {
+                final String dateSelected = data.getStringExtra("data");
+                Log.d("teste", dateSelected);
+                ano= Integer.parseInt(dateSelected.substring(0,4));
+                mes= Integer.parseInt(dateSelected.substring(4,6));
+                dia= Integer.parseInt(dateSelected.substring(6,8));
+                int u=data.getIntExtra("tipo",-1);
+                //da=ConvertToDate(dateSelected);
+                CalendarDay cday = new CalendarDay(ano,mes-1,dia);
+                if(u==0){
                 dates.add(cday);
-                mcv.addDecorators(new EventDecoratorEventos(Color.RED, dates));
+                mcv.addDecorators(new EventDecoratorEventos(Color.RED, dates));}
+                if(u==1) {
+                    dates2.add(cday);
+                    mcv.addDecorators(new EventDecoratorEventos(Color.GREEN, dates2));
+                }
             }
-            if(resultCode == 1) {
-                dates2.add(cday);
-                mcv.addDecorators(new EventDecoratorEventos(Color.GREEN, dates2));
-            }
+
 
             }
         }

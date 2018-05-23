@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.SimpleCursorAdapter;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -15,7 +16,7 @@ public class Database extends SQLiteOpenHelper {
     private SQLiteDatabase database;
 
     public Database(Context context) {
-        super(context, "calendario", null, 4);
+        super(context, "calendario", null, 6);
     }
 
 
@@ -23,8 +24,8 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         // db.execSQL(" CREATE TABLE 'feriado' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'ano' INTEGER NOT NULL, 'mes' INTEGER NOT NULL, 'dia' INTEGER NOT NULL);");
-        db.execSQL(" CREATE TABLE 'eventos' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'ano' INTEGER NOT NULL, 'mes' INTEGER NOT NULL, 'dia' INTEGER NOT NULL, " +
-                "'titulo' STRING, 'descricao' STRING, 'horaInit' STRING, 'horaFim' STRING);");
+        db.execSQL(" CREATE TABLE 'eventos' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'ano' STRING NOT NULL, 'mes' STRING NOT NULL, 'dia' STRING NOT NULL, " +
+                "'titulo' STRING, 'descricao' STRING, 'horaInit' STRING, 'horaFim' STRING, 'tipo' STRING);");
 
     }
 
@@ -41,7 +42,7 @@ public class Database extends SQLiteOpenHelper {
                    "(ano,mes,dia,titulo,descricao,horaInit,horaFim)");
        }
     */
-    public boolean insertData(int ano, int mes, int dia, String titulo, String descricao, String horaInit, String horaFim) {
+    public boolean insertData(String ano, String mes, String dia, String titulo, String descricao, String horaInit, String horaFim, String tipo) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -52,7 +53,7 @@ public class Database extends SQLiteOpenHelper {
         contentValues.put("descricao", descricao);
         contentValues.put("horaInit", horaInit);
         contentValues.put("horaFim", horaFim);
-
+        contentValues.put("tipo", tipo);
 
         long result = db.insert("eventos", null, contentValues);
         if (result == -1)
@@ -76,36 +77,76 @@ public class Database extends SQLiteOpenHelper {
         }
         db.close();
         return cursor;
-   /* public Cursor carregaDados(int ano,int mes, int dia){
-        Cursor cursor;
-        SQLiteDatabase db = this.getWritableDatabase();
 
 
-        cursor = db.query("eventos", null, "ano= "  +  ano + " AND "+ " mes= " + mes + " AND " + " dia= " +dia ,null, null, null, null, null);
-
-        if(cursor!=null){
-            cursor.moveToFirst();
-        }
-        db.close();
-        return cursor;
-    }*/
     }
+     public Cursor carregaDados(int ano,int mes, int dia){
+         Cursor cursor;
+         SQLiteDatabase db = this.getWritableDatabase();
 
-    /*public HashSet<CalendarDay> carregaDadosProva() {
+
+
+         String TABLE = "eventos";
+         String where = "ano=? AND mes=? AND dia=?";
+         String[] args = {String.valueOf(ano), String.valueOf(mes), String.valueOf(dia)};
+// Execute
+         cursor = db.query(TABLE,null, where,args, null, null, null);
+         //cursor = db.query("eventos", null, "('ano' = "  +  ano + " AND "+ " 'mes' = " + mes + " AND " + " 'dia' = " +dia ,null, null, null, null, null);
+
+         if(cursor!=null){
+             cursor.moveToFirst();
+         }
+         db.close();
+         return cursor;
+     }
+    public HashSet<CalendarDay> carregaDadosProva() {
         final HashSet<CalendarDay> dataDeProvas = new HashSet<>();
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
-
-        cursor = db.query("eventos", new String[]{"ano", "mes", "dia", "evento"}, "evento = 0", null, null, null, null, null);
+        String TABLE = "eventos";
+        String where = "tipo=?";
+        String[] args = {"0"};
+cursor = db.query(TABLE,null, where,args, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                String dataDeProva = cursor.getString(cursor.getColumnIndex("ano" + "mes" + "dia"));
-                dataDeProvas.add(ConvertToDate(dataDeProva));
+                String ano = cursor.getString(cursor.getColumnIndex("ano"));
+                String mes = cursor.getString(cursor.getColumnIndex("mes"));
+                String dia = cursor.getString(cursor.getColumnIndex("dia"));
+                CalendarDay cday = new CalendarDay(Integer.valueOf(ano),Integer.valueOf(mes)-1,Integer.valueOf(dia));
+
+
+                dataDeProvas.add(cday);
             } while (cursor.moveToNext());
+            cursor.close();
             return dataDeProvas;
         }
+        cursor.close();
         return dataDeProvas;
-    }*/
+    }
+    public HashSet<CalendarDay> carregaDadosTrabalho() {
+        final HashSet<CalendarDay> dataDeTrabalho = new HashSet<>();
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String TABLE = "eventos";
+        String where = "tipo=?";
+        String[] args = {"1"};
+        cursor = db.query(TABLE,null, where,args, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                String ano = cursor.getString(cursor.getColumnIndex("ano"));
+                String mes = cursor.getString(cursor.getColumnIndex("mes"));
+                String dia = cursor.getString(cursor.getColumnIndex("dia"));
+                CalendarDay cday = new CalendarDay(Integer.valueOf(ano),Integer.valueOf(mes)-1,Integer.valueOf(dia));
+
+
+                dataDeTrabalho.add(cday);
+            } while (cursor.moveToNext());
+            cursor.close();
+            return dataDeTrabalho;
+        }
+        cursor.close();
+        return dataDeTrabalho;
+    }
     /*   String metodo(String parametro){
            String selectQuery =
                    "SELECT * FROM correspondente WHERE num_vidas =" + parametro;
@@ -136,6 +177,7 @@ public class Database extends SQLiteOpenHelper {
         CalendarDay cday = new CalendarDay(ano, mes - 1, dia);
         return cday;
     }
+
 }
 
 

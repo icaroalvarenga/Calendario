@@ -81,14 +81,15 @@ final int i = dropdown.getSelectedItemPosition();
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                database.insertData(Integer.parseInt(anost),Integer.parseInt(messt),Integer.parseInt(diast),titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString());
-
                 int i=dropdown.getSelectedItemPosition();
+                String j=Integer.toString(i);
+                database.insertData(anost,messt,diast,titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString(),j);
+
+
                 Intent devolve = new Intent();
                 devolve.putExtra("data", anost+messt+diast);
-                setResult(i,devolve);
+                devolve.putExtra("tipo",i);
+                setResult(0,devolve);
 
                 finish();
             }
