@@ -19,6 +19,8 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <ListView
+        android:clickable="true"
+        android:focusable="true"
         android:id="@+id/myDate"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -26,7 +28,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        android:divider="@android:color/black"
+        android:dividerHeight="3dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addButton"

@@ -1,18 +1,22 @@
 package com.example.icaro.myapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
@@ -22,8 +26,11 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    String items[]=new String[]{"a","b"};
+
     HashSet<CalendarDay> dates = new HashSet<>();
     final HashSet<CalendarDay> dates2 = new HashSet<>();
 
@@ -63,17 +70,94 @@ public class MainActivity extends AppCompatActivity {
                                             public void onDateSelected(@NonNull final MaterialCalendarView mcv, @NonNull final CalendarDay date, boolean selected) {
 
                                             FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.addButton);
+                                            //Button btnMaisContent = (Button) findViewById(R.id.btnMaisContent);
 
+
+
+
+
+                                            final Intent intent = new Intent(mcv.getContext(), EventActivity.class);
+                                            final int id2=0;
+                                            final int tipo=0;
                                             Database crud = new Database(getBaseContext());
-                                            Cursor cursor = crud.carregaDados(date.getYear(),date.getMonth()+1,date.getDay());
+                                            final Cursor cursor = crud.carregaDados(date.getYear(),date.getMonth()+1,date.getDay());
+                                            String[] nomeCampos = new String[] {"titulo", "horaInit","_id","tipo"};
+                                            int[] idViews = new int[] {R.id.tituloView, R.id.horaView,id2,R.id.tipoView};
 
-                                            String[] nomeCampos = new String[] {"titulo", "horaInit"};
-                                            int[] idViews = new int[] {R.id.tituloView, R.id.horaView};
+                                            final SimpleCursorAdapter adaptador = new SimpleCursorAdapter(getBaseContext(),
+                                                    R.layout.lista_eventos,cursor,nomeCampos,idViews, 0)
+                                            {@Override
+                                            public View getView(int position, View convertView, ViewGroup parent){
+                                                // Get the current item from ListView
+                                                View view = super.getView(position,convertView,parent);
+                                                final TextView tipo = (TextView) view.findViewById(R.id.tipoView);
+                                                Log.d("teste", tipo.getText().toString());
 
-                                            SimpleCursorAdapter adaptador = new SimpleCursorAdapter(getBaseContext(),
-                                                    R.layout.lista_eventos,cursor,nomeCampos,idViews, 0);
+                                                if(tipo.getText().toString().equals("0"))
+                                                {
+                                                    // Set a background color for ListView regular row/item
+                                                    view.setBackgroundColor(Color.parseColor("#ffff8080"));
+                                                }
+                                                else
+                                                {
+                                                    // Set the background color for alternate row/item
+                                                    view.setBackgroundColor(Color.parseColor("#FF4db8ff"));
+                                                }
+                                                return view;
+                                            }
+                                            };
                                             ListView lista = (ListView) findViewById(R.id.myDate);
+
+
+
+
                                             lista.setAdapter(adaptador);
+                                            /*--------
+                                            for (int i = 1; i < lista.getCount(); i++) {
+                                                TextView tv = (TextView)lista.getChildAt(i);
+                                                String teste;
+                                                teste=tv.findViewById(R.id.tipoView).toString();
+                                                if(teste.equals(0));
+                                                tv.setBackgroundColor(Color.RED);
+                                            }
+
+
+
+
+                                            /*--------*/
+
+                                            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                                @Override
+                                                public void onItemClick(AdapterView<?> parent, View view,
+                                                                        int position, long id) {
+                                                    Intent intent = new Intent(mcv.getContext(), ListItemDetail.class);
+                                                    int i = (int)id;
+                                                    intent.putExtra("id",i);
+
+                                                    startActivity(intent);
+                                                    Log.d("teste", String.valueOf(id));
+                                                }
+                                            });
+
+                                           /* btnMaisContent.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    Intent intent = new Intent(mcv.getContext(), EventActivity.class);
+
+
+
+                                                    String[] nomeCampos = new String[] {"titulo", "descricao","ano", "mes","dia","horaInit","horaFim"};
+                                                    int[] idViews = new int[] {R.id.evTitulo, R.id.evDescricao, R.id.evAno,R.id.evMes,R.id.evDia,R.id.horaInit,R.id.horaFim};
+                                                    SimpleCursorAdapter adaptador = new SimpleCursorAdapter(getBaseContext(),
+                                                            R.layout.eventos_edit,cursor,nomeCampos,idViews, 0);
+
+
+
+                                                    startActivityForResult(intent, 1);
+                                                }
+                                            });
+*/
 
 
                                             addButton.setOnClickListener(new View.OnClickListener() {

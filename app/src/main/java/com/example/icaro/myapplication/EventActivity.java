@@ -69,9 +69,7 @@ final int i = dropdown.getSelectedItemPosition();
         anost=ano.getText().toString();
         messt=mes.getText().toString();
         diast=dia.getText().toString();
-        // fazendo alguma coisa com o dado capturado
-       // ListView txt = (ListView) findViewById(R.id.myDate);
-       // txt.setText(dateSelected);
+
         final HashSet<CalendarDay> dates = new HashSet<>();
         final EditText timeEditText = (EditText) findViewById(R.id.horaInit);
         new SetTime(timeEditText);

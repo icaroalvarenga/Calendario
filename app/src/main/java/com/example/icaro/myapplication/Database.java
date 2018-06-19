@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.SimpleCursorAdapter;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -77,9 +76,52 @@ public class Database extends SQLiteOpenHelper {
         }
         db.close();
         return cursor;
-
-
     }
+    public Cursor carregaDados(int id){
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+
+        String TABLE = "eventos";
+        String where = "_id=?";
+        String[] args = {String.valueOf(id)};
+// Execute
+        cursor = db.query(TABLE,null, where,args, null, null, null);
+
+        if(cursor!=null){
+            cursor.moveToFirst();
+        }
+        db.close();
+        return cursor;
+    }
+    public boolean updateDados(Integer id,String ano, String mes, String dia, String titulo, String descricao, String horaInit, String horaFim, String tipo) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("ano", ano);
+        contentValues.put("mes", mes);
+        contentValues.put("dia", dia);
+        contentValues.put("titulo", titulo);
+        contentValues.put("descricao", descricao);
+        contentValues.put("horaInit", horaInit);
+        contentValues.put("horaFim", horaFim);
+        contentValues.put("tipo", tipo);
+
+        //String[] args = {String.valueOf(ano), String.valueOf(mes), String.valueOf(dia), String.valueOf(titulo), String.valueOf(descricao), String.valueOf(horaInit),
+               // String.valueOf(horaFim), String.valueOf(tipo)};
+
+        long result = db.update("eventos",contentValues,"_id="+id,null);
+
+        if (result == -1)
+            return false;
+        else {
+            Log.d("teste", "true");
+            return true;
+
+        }
+    }
+
      public Cursor carregaDados(int ano,int mes, int dia){
          Cursor cursor;
          SQLiteDatabase db = this.getWritableDatabase();
@@ -99,6 +141,7 @@ public class Database extends SQLiteOpenHelper {
          db.close();
          return cursor;
      }
+
     public HashSet<CalendarDay> carregaDadosProva() {
         final HashSet<CalendarDay> dataDeProvas = new HashSet<>();
         Cursor cursor;
@@ -147,6 +190,10 @@ cursor = db.query(TABLE,null, where,args, null, null, null);
         cursor.close();
         return dataDeTrabalho;
     }
+
+
+
+
     /*   String metodo(String parametro){
            String selectQuery =
                    "SELECT * FROM correspondente WHERE num_vidas =" + parametro;
