@@ -40,7 +40,6 @@
         android:includeFontPadding="false"
         android:paddingLeft="5dp"
         android:text="TextView"
-        android:textAlignment="viewStart"
         android:textSize="24sp" />
 
         <TextView
