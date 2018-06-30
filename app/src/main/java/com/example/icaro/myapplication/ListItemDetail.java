@@ -70,6 +70,7 @@ public class ListItemDetail extends Activity {
 
 
         Button update = (Button) findViewById(R.id.btnUpdateEvento);
+        Button delete = (Button) findViewById(R.id.btnDelete);
 
 
 
@@ -85,6 +86,14 @@ public class ListItemDetail extends Activity {
                 database.updateDados(id,ano.getText().toString(),mes.getText().toString(),dia.getText().toString(),titulo.getText().toString(), descricao.getText().toString(), horaInit.getText().toString(), horaFim.getText().toString(),j);
 
 
+
+                finish();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                database.deletarDado(id);
 
                 finish();
             }

@@ -28,4 +28,7 @@ dependencies {
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:gridlayout-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+
+    implementation 'com.wdullaer:materialdatetimepicker:2.3.0'
 }

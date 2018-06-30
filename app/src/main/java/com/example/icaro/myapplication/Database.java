@@ -95,6 +95,20 @@ public class Database extends SQLiteOpenHelper {
         db.close();
         return cursor;
     }
+    public void deletarDado(int id){
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+
+        String TABLE = "eventos";
+        String where = "_id=?";
+        String[] args = {String.valueOf(id)};
+// Execute
+         db.delete("eventos","_id="+id,  null);
+
+
+    }
     public boolean updateDados(Integer id,String ano, String mes, String dia, String titulo, String descricao, String horaInit, String horaFim, String tipo) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
