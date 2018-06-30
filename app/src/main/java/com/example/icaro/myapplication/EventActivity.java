@@ -147,6 +147,7 @@ int aux=minCon-(iA+1);
 
     calendar.set(Calendar.HOUR_OF_DAY, horaCon);
     calendar.set(Calendar.MINUTE,aux);
+    calendar.set(Calendar.SECOND, 0);
 
     manager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(), pendingIntent);
 }
